@@ -52,16 +52,31 @@ module Campfire
     def fragment(name, id, version)
       t = table(name)
       entry = t[id]
-      return entry[1] if entry && entry[0] == version
+      if entry && entry[0] == version
+        count_fragment(0)
+        return entry[1]
+      end
+      count_fragment(1)
       html = yield
       t.clear if t.size >= LIMIT
       t[id] = [version, html.freeze]
       html
     end
 
+    # A miss is counted by the `fragment` call that renders it.
     def peek_fragment(name, id, version)
       entry = table(name)[id]
-      entry[1] if entry && entry[0] == version
+      if entry && entry[0] == version
+        count_fragment(0)
+        entry[1]
+      end
+    end
+
+    # This request's fragment hits and misses (fiber storage: one Ractor serves
+    # many requests concurrently), reported in its Server-Timing header.
+    def count_fragment(i)
+      counts = Fiber[:campfire_fragments]
+      counts[i] += 1 if counts
     end
 
     def invalidate(name, id = nil)

@@ -27,6 +27,7 @@ module Campfire
       @status = 200
       @headers = []
       @flash_next = nil
+      Fiber[:campfire_fragments] = [0, 0]
     end
 
     # ---- request ------------------------------------------------------
@@ -390,6 +391,9 @@ module Campfire
         end
       end
       h << ["content-type", type] if type
+      if (counts = Fiber[:campfire_fragments]) && (counts[0] + counts[1]).positive?
+        h << ["server-timing", %(fragments;desc="hits=#{counts[0]} misses=#{counts[1]}")]
+      end
       h << ["x-version", Campfire.config.app_version]
       h << ["x-rev", Campfire.config.git_revision]
       status, body = Front.rails!(@request, status, h, body, live: live_response?)
