@@ -1,3 +1,12 @@
+> [!NOTE]
+> **This is a fork of [tobi/campfire-once-ruby-ractor](https://github.com/tobi/campfire-once-ruby-ractor), not the original repository.**
+>
+> The `preview` branch is upstream plus pull requests that have been submitted to
+> [tobi/campfire-once-ruby-ractor](https://github.com/tobi/campfire-once-ruby-ractor/pulls) but not
+> yet merged, so they can be built, tested and benchmarked together while they wait for review.
+> Every change here is meant to go upstream, and leaves this branch once it is merged there.
+> `main` is an unmodified copy of upstream.
+
 # Campfire on Ruby 4 Ractors
 
 A port of [ONCE Campfire](https://github.com/basecamp/once-campfire) to Ruby 4.0.7 without Rails:
